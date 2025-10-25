@@ -1,0 +1,47 @@
+package alzii.efficientshulkers;
+
+import com.mojang.logging.LogUtils;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import org.slf4j.Logger;
+
+
+@Mod(EfficientShulkers.MODID)
+public class EfficientShulkers {
+    public static final String MODID = "efficientshulkers";
+    // Directly reference a slf4j logger
+    private static final Logger LOGGER = LogUtils.getLogger();
+
+    // The constructor for the mod class is the first code that is run when your mod is loaded.
+    // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
+    public EfficientShulkers(IEventBus modEventBus, ModContainer modContainer) {
+        NeoForge.EVENT_BUS.register(this);
+
+        // Register our mod's ModConfigSpec so that FML can create and load the config file for us
+        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+    }
+
+    @SubscribeEvent
+    public void onBlockBreak(BlockEvent.BreakEvent event) {
+        BlockState state = event.getState();
+        if (state.is(Blocks.SHULKER_BOX)) {
+            LOGGER.info("VANILLA SHULKER BROKEN");
+        }
+    }
+
+    @SubscribeEvent
+    public void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+        BlockState state = event.getPlacedBlock();
+        if (state.is(Blocks.SHULKER_BOX)) {
+            LOGGER.info("VANILLA SHULKER PLACED");
+        }
+    }
+}
